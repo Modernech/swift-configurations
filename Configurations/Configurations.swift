@@ -7,25 +7,25 @@
 
 import Foundation
 
-public class Configuration: NSObject {
+open class Configuration: NSObject {
 
     let ConfigurationPlistKey = "ConfigurationFileName"
     let CurrentConfigurationPlistKey = "Configuration"
     
-    public private(set) var configurationName: String?
-    private var dictionary: NSDictionary!
+    open fileprivate(set) var configurationName: String?
+    fileprivate var dictionary: NSDictionary!
     
-    public static func defaultConfiguration() -> Configuration {
+    open static func defaultConfiguration() -> Configuration {
         struct Static {
             static var instance = Configuration()
         }
         return Static.instance
     }
     
-    private override init() {
+    fileprivate override init() {
         super.init()
 
-        let bundle = NSBundle.mainBundle()
+        let bundle = Bundle.main
 
         self.configurationName = bundle.infoDictionary![CurrentConfigurationPlistKey] as? String
         
@@ -34,15 +34,15 @@ public class Configuration: NSObject {
         }
         
         let plistName = bundle.infoDictionary![self.ConfigurationPlistKey] as! String
-        let plistPath = bundle.pathForResource(plistName, ofType: "plist")
+        let plistPath = bundle.path(forResource: plistName, ofType: "plist")
         let dictionary = NSDictionary(contentsOfFile: plistPath!)
         
-        self.dictionary = dictionary?.valueForKey(self.configurationName!) as! NSDictionary
+        self.dictionary = dictionary?.value(forKey: self.configurationName!) as! NSDictionary
     }
     
-    public subscript(key: String) -> AnyObject? {
+    open subscript(key: String) -> AnyObject? {
         get {
-            return self.dictionary.valueForKey(key)
+            return self.dictionary.value(forKey: key) as AnyObject?
         }
     }
 
